@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct MyStruct {
+  int dest;
+  int next_hop;
+  int cost;
+  struct MyStruct* next;
+} MyStruct_t;
+
+MyStruct_t* createNode(int dest, int next_hop, int cost) {
+  MyStruct_t* newNode = (MyStruct_t*)malloc(sizeof(MyStruct_t));
+  if (newNode == NULL) {
+    printf("Errore durante l'allocazione della memoria per il nuovo nodo.\n");
+    return NULL;
+  }
+
+  newNode->dest = dest;
+  newNode->next_hop = next_hop;
+  newNode->cost = cost;
+  newNode->next = NULL;
+
+  return newNode;
+}
+
+void insertNode(MyStruct_t** head, int dest, int next_hop, int cost) {
+  MyStruct_t* newNode = createNode(dest, next_hop, cost);
+  if (newNode == NULL) {
+    return;
+  }
+
+  if (*head == NULL) {
+    *head = newNode;
+  } else {
+    MyStruct_t* current = *head;
+    while (current->next != NULL) {
+      current = current->next;
+    }
+    current->next = newNode;
+  }
+}
+
+void printList(MyStruct_t* head) {
+  MyStruct_t* current = head;
+  while (current != NULL) {
+    printf("Elemento: dest=%d, next_hop=%d, cost=%d\n", current->dest, current->next_hop, current->cost);
+    current = current->next;
+  }
+}
+
+void freeList(MyStruct_t* head) {
+  MyStruct_t* current = head;
+  while (current != NULL) {
+    MyStruct_t* temp = current;
+    current = current->next;
+    free(temp);
+  }
+}
+
+int main() {
+  MyStruct_t* myList = NULL;
+
+  // Esempio di inserimento di elementi nella lista
+  insertNode(&myList, 123, 456, 789);
+  insertNode(&myList, 111, 222, 333);
+  insertNode(&myList, 444, 555, 666);
+
+  // Esempio di stampa della lista
+  printList(myList);
+
+  // Liberare la memoria occupata dalla lista
+  freeList(myList);
+
+  return 0;
+}
